@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/create_services.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/form.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <title>SERVICES | create</title>
+</head>
+<body>
+    <header>
+        <h1>Create a New Service</h1>
+        <ul id="nav">
+            <li><a href="/services">Services</a></li>
+            <li><a href="/">Nexus</a></li>
+            <li><a href="/user/logout">Logout</a></li>
+            <li><a href="/user/profile">Profile</a></li>
+        </ul>
+    </header>
+    <form id="create-service-form" name="create-service-form" action="/services/create" method="POST" autocomplete="on">
+        <div class="form-box">
+            <label for="service_name">Nom du service:</label>
+            <input type="text" id="service_name" name="service_name" required>
+            <label for="service_description">Description du service:</label>
+            <input type="text" id="service_description" name="service_description" required>
+            <label for="service_tags">Tags du service:</label>
+            <input type="text" id="service_tags" name="service_tags" placeholder="tag 1, tag 2, tag 3">
+            <label for="service_is_ai">Service utilisable par l'IA :</label>
+            <input type="checkbox" id="service_is_ai" name="service_is_ai">
+        </div>
+        <div class="ide">
+            <div class="ide-toolbar">
+                <span id="ide-filename"></span>
+                <button type="submit" id="save-button">
+                    <svg fill="var(--secondary-color)" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 407.096 407.096" xml:space="preserve" width="24px" height="24px"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <path d="M402.115,84.008L323.088,4.981C319.899,1.792,315.574,0,311.063,0H17.005C7.613,0,0,7.614,0,17.005v373.086 c0,9.392,7.613,17.005,17.005,17.005h373.086c9.392,0,17.005-7.613,17.005-17.005V96.032 C407.096,91.523,405.305,87.197,402.115,84.008z M300.664,163.567H67.129V38.862h233.535V163.567z"></path> <path d="M214.051,148.16h43.08c3.131,0,5.668-2.538,5.668-5.669V59.584c0-3.13-2.537-5.668-5.668-5.668h-43.08 c-3.131,0-5.668,2.538-5.668,5.668v82.907C208.383,145.622,210.92,148.16,214.051,148.16z"></path> </g> </g> </g></svg>
+                </button>
+            </div>
+            <div id="editor" class="ide-editor"></div>
+        </div>
+        <button type="submit" id="submit-button">Create Service</button>
+    </form>
+    <section id="service-preview-section">
+        <button id="refresh-preview-button">
+            <svg width="36px" height="36px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 21C16.9706 21 21 16.9706 21 12C21 9.69494 20.1334 7.59227 18.7083 6L16 3M12 3C7.02944 3 3 7.02944 3 12C3 14.3051 3.86656 16.4077 5.29168 18L8 21M21 3H16M16 3V8M3 21H8M8 21V16" stroke="var(--secondary-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+        </button>
+        <iframe id="detail-page-integration" src="/services/test/<%= isAI %>" frameborder="0"></iframe>
+    </section>
+    <!-- Template Content  -->
+    <script id="tpl" type="application/json"><%- JSON.stringify(templateContent || "") %></script>
+
+    <script id="existingServicesData" type="application/json"><%- JSON.stringify(existingServices || []) %></script>
+    <!-- ACE Editor -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.6/ace.js"></script>
+
+    <!-- Autocomplétion -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.6/ext-language_tools.min.js"></script>
+
+    <!-- Mode JavaScript (coloration + worker JS) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.6/mode-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.6/worker-javascript.min.js"></script>
+
+    <!-- Script Create Services -->
+    <script src="/js/create_services.js"></script>
+</body>
+</html>

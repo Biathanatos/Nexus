@@ -1,0 +1,24 @@
+main #services {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+main #services .services-box {
+    width: 20%;
+    padding: 15px;
+    border: 1px solid var(--form-box-border-color);
+    border-radius: var(--form-box-border-radius);
+    background-color: var(--primary-color);
+}
+
+main #services .services-box h3 {
+    font-size: var(--font-size-md);
+    margin-top: 0;
+    border-bottom: 1px solid var(--form-box-border-color);
+    padding-bottom: 5px;
+}
+
+main #services .services-box p {
+    font-size: var(--font-size-sm);
+}

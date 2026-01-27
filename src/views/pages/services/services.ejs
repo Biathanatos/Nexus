@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SERVICES</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/services_box.css">
+    <link rel="stylesheet" href="/css/services.css">
+</head>
+<body>
+    <header>
+        <h1>Services</h1>
+        <ul id="nav">
+            <li><a href="/">Nexus</a></li>
+            <li><a href="/user/logout">Logout</a></li>
+            <li><a href="/user/profile">Profile</a></li>
+        </ul>
+    </header>
+    <main>
+        <section id="services">
+            <% if (services.length > 0) { %>
+                <% services.forEach(function(service) { %>
+                <article class="services-box">
+                        <h3><a href="/services/<%= service.id %>/<%= service.is_ai %>"><%= service.name %></a></h3>
+                        <p><%= service.description %></p>
+                </article>
+                <% }) %>
+            <% } %>
+            <article class="services-box" id="create-service">
+                <h3><a href="/services/create/0">Créer un service</a></h3>
+                <% if (!services || services.length === 0) { %>
+                    <p>Vous n'avez pas encore de services. Cliquez ci-dessus pour en créer un nouveau.</p>
+                <% } else { %>
+                    <p>Ajoutez plus de services en cliquant sur le lien ci-dessus.</p>
+                <% } %>
+            </article>
+            <article class="services-box" id="create-service">
+                <h3><a href="/services/create/1">Créer un service IA</a></h3>
+                <% if (!services || services.length === 0) { %>
+                    <p>Vous n'avez pas encore de services pour IA. Cliquez ci-dessus pour en créer un nouveau.</p>
+                <% } else { %>
+                    <p>Ajoutez plus de services en cliquant sur le lien ci-dessus.</p>
+                <% } %>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

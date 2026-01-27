@@ -1,0 +1,74 @@
+header {
+    height: 55dvh;
+    gap: var(--nexus-header-gap);
+    justify-content: center;
+    flex-direction: column;
+    background: linear-gradient(90deg, var(--accent-color), var(--secondary-color), var(--primary-color));
+}
+
+header h1 {
+    font-size: var(--nexus-header-h1-font-size);
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+header h1 #Nexus_word_in_title {
+    color: var(--secondary-color);
+    text-decoration: dashed underline;
+}
+
+header h2 {
+    font-size: var(--nexus-header-h2-font-size);
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+#nav {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#nav li a {
+    font-size: var(--nexus-nav-font-size);
+}
+
+/* main content styling */
+
+main {
+    padding: 20px;
+}
+
+main #nexus-intro {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+main #nexus-intro h2 {
+    font-size: var(--font-size-lg);
+    margin: 0;
+    padding: 0;
+}
+
+/* Header Animation */
+header {
+    animation: gradientAnimation 15s ease infinite;
+    background-size: 200% 200%;
+}
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}

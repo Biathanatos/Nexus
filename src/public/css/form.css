@@ -1,0 +1,89 @@
+#user-info {
+    width: var(--form-container-width);
+    max-width: var(--form-container-max-width);
+    margin: var(--form-title-margin) auto;
+    padding: var(--form-container-padding);
+    border: 1px solid var(--form-box-border-color);
+    border-radius: var(--form-box-border-radius);
+    background-color: var(--primary-color);
+}
+
+h2 {
+    text-align: center;
+    margin-top: var(--form-title-margin);
+    margin-bottom: var(--form-title-margin);
+    font-size: var(--font-size-xl);
+}
+
+form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--form-gap);
+    width: var(--form-container-width);
+    max-width: var(--form-container-max-width);
+    margin: var(--form-title-margin) auto;
+    overflow: hidden;
+    margin-bottom: 40px;
+}
+
+form .form-box {
+    flex: 1 1 45%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--form-box-gap);
+    padding: var(--form-box-padding);
+    border: 1px solid var(--form-box-border-color);
+    border-radius: var(--form-box-border-radius);
+    background-color: var(--primary-color);
+}
+
+form .form-box h3 {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    border-bottom: 1px solid var(--form-box-border-color);
+    padding-bottom: 5px;
+}
+
+form .form-box label {
+    font-size: var(--font-size-sm);
+}
+
+form .form-box input,
+form .form-box select {
+    padding: var(--input-padding);
+    border: 1px solid var(--input-border-color);
+    border-radius: var(--input-border-radius);
+    background-color: var(--input-background-color);
+    color: var(--input-font-color);
+    font-size: var(--input-font-size);
+}
+
+form .form-box input[type="checkbox"] {
+    width: min-content;
+}
+
+form .form-box input:focus,
+form .form-box select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-color) 25%, transparent);
+}
+
+form button {
+    width: var(--form-button-width);
+    grid-column: span 2;
+    padding: 10px 20px;
+    font-size: var(--font-size-md);
+    border: none;
+    border-radius: var(--input-border-radius);
+    background-color: var(--secondary-color);
+    color: var(--Neutral-color);
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+}
+
+form button:hover {
+    color: var(--primary-color);
+    background-color: var(--accent-color);
+}

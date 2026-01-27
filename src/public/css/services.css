@@ -1,0 +1,8 @@
+main {
+    padding: 0 40px;
+    margin-top: 20px;
+}
+
+main #services {
+    justify-content: start !important;
+}

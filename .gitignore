@@ -1,0 +1,16 @@
+node_modules/
+
+# SQLite data
+src/data/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env

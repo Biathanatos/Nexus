@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/table.css">
+    <link rel="stylesheet" href="/css/form.css">
+    <link rel="stylesheet" href="/css/detail_service.css">
+    <link rel="stylesheet" href="/css/markdown_viewer.css">
+    <title>SERVICES | <%= service.name %></title>
+</head>
+<body>
+    <header>
+        <h1>Create a New Service</h1>
+        <ul id="nav">
+            <li><a href="/services">Services</a></li>
+            <li><a href="/">Nexus</a></li>
+            <li><a href="/user/logout">Logout</a></li>
+            <li><a href="/user/profile">Profile</a></li>
+        </ul>
+    </header>
+    <h1><%= service.name %></h1>
+    <p><%= service.description %></p>
+    <p>Créé le <%= service.created_at %></p>
+    <div id="service-tags">
+        <% if (service.tags && service.tags.length > 0) { %>
+            <% for (const tag of service.tags) { %>
+                <span class="tag"><%= tag %></span>
+            <% } %>
+        <% } else { %>
+            <span>Aucun tag</span>
+        <% } %>
+    </div>
+    <% console.log('isAI:', isAI) %>
+    <% if (isAI) { %>
+        <p><strong>Ce service est accessible par l'IA.</strong></p>
+    <% } else { %>
+        <p><strong>Ce service n'est pas accessible par l'IA.</strong></p>
+    <% } %>
+    <main>
+        <section id="service-content"></section>
+    </main>
+    <%= console.log('Client Script URL:', clientScriptUrl) %>
+    <% if (clientScriptUrl !== '#') { %>
+    <script type="module" src="<%= clientScriptUrl %>"></script>
+    <script src="/js/services_detail.js"></script>
+    <% } else { %>
+    <script id="detail-script" src="/js/services_detail_test.js"></script>
+    <% } %>
+</body>
+</html>

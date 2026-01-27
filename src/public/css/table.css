@@ -1,0 +1,49 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#weather-table {
+    font-family: var(--font-family);
+    background: var(--table-background-color);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--table-shadow);
+}
+
+#weather-table thead {
+    background: linear-gradient(90deg, var(--table-header-gradient-start), var(--table-header-gradient-end));
+    color: var(--table-header-text-color);
+}
+
+#weather-table th,
+#weather-table td {
+    padding: 12px 14px;
+    text-align: center;
+    border-bottom: 1px solid var(--table-border-color);
+    font-size: 14px;
+}
+
+#weather-table th {
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+
+#weather-table tbody tr:nth-child(even) {
+    background: var(--table-row-even-background);
+}
+
+#weather-table tbody tr:hover {
+    background: var(--table-row-hover-background);
+    transition: background 0.2s ease-in-out;
+}
+
+#weather-table tbody td:first-child {
+    font-weight: 600;
+    color: var(--table-first-column-text-color);
+    text-align: left;
+}
+
+#weather-table tbody td {
+    color: var(--table-text-color);
+}

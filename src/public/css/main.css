@@ -1,0 +1,65 @@
+:root {
+    /* Color palette */
+    --primary-color: #12182B; /* Primary surface */
+    --secondary-color: #7C5CFF; /* Vibrant highlights */
+    --background-color: #0B1020; /* Main background */
+    --accent-color: #2DE2E6; /* Neon accents */
+    --Neutral-color: #E6F1FF; /* Main text */
+    --font-color: #CFE0FF; /* Secondary text */
+    --form-box-border-color: #2A3352; /* Subtle borders */
+    --input-border-color: #2F3B63; /* Input borders */
+    --input-background-color: #0F1528; /* Input backgrounds */
+
+    /* Font properties */
+    --font-size-xs: 12px;
+    --font-size-sm: 18px;
+    --font-size-md: 25px;
+    --font-size-lg: 35px;
+    --font-size-xl: 45px;
+
+    --font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+    /* For form layout */
+    --form-gap: 15px;
+
+    --form-box-gap: 10px;
+    --form-box-padding: 15px;
+    --form-box-border-radius: 8px;
+    --form-container-width: 70%;
+    --form-container-max-width: 900px;
+    --form-container-padding: 20px;
+    --form-title-margin: 20px;
+    --form-button-width: 180px;
+
+    --input-padding: 8px;
+    --input-border-radius: 5px;
+    --input-font-color: var(--font-color);
+    --input-font-size: var(--font-size-sm);
+
+    /* Tables */
+    --table-background-color: var(--primary-color);
+    --table-header-gradient-start: var(--secondary-color);
+    --table-header-gradient-end: var(--accent-color);
+    --table-header-text-color: var(--primary-color);
+    --table-border-color: var(--form-box-border-color);
+    --table-row-even-background: #10182e;
+    --table-row-hover-background: #17213a;
+    --table-text-color: var(--font-color);
+    --table-first-column-text-color: var(--Neutral-color);
+    --table-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+
+    /* Nexus specific styles */
+    --nexus-header-gap: 40px;
+    --nexus-header-height: 60dvh;
+    --nexus-nav-font-size: var(--font-size-md);
+    --nexus-header-h1-font-size: var(--font-size-xl);
+    --nexus-header-h2-font-size: var(--font-size-lg);
+}
+
+body {
+    margin: 0%;
+    padding: 0%;
+    color: var(--Neutral-color);
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+}

@@ -1,0 +1,27 @@
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: var(--primary-color);
+    border-bottom: 1px solid var(--form-box-border-color);
+}
+
+header h1 {
+    margin: 0;
+    font-size: var(--font-size-lg);
+}
+
+#nav {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+}
+
+#nav li a {
+    color: var(--Neutral-color);
+    text-decoration: none;
+    font-size: var(--font-size-md);
+}

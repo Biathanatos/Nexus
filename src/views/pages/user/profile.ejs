@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/form.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <title><%= userData.username.toUpperCase() %> PROFILE</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome, <%= userData.username.toUpperCase() %></h1>
+        <ul id="nav">
+            <li><a href="/">Nexus</a></li>
+            <li><a href="/user/logout">Logout</a></li>
+            <li><a href="/services">Services</a></li>
+        </ul>
+    </header>
+    <section id="user-info">
+        <p><strong>Email:</strong> <%= userData.email %></p>
+        <p><strong>Nom d'utilisateur:</strong> <%= userData.username %></p>
+    </section>
+    <section>
+        <h2>Apparence</h2>
+        <form action="/user/profile/appearance" method="POST">
+            <div id="hair" class="form-box">
+                <h3>Cheveux</h3>
+                <label for="hair_color">Couleur: </label>
+                <input type="text" id="hair_color" name="hair_color" value="<%= userAppearance.hair_color %>">
+                <label for="hair_style">Style: </label>
+                <input type="text" id="hair_style" name="hair_style" value="<%= userAppearance.hair_style %>">
+                <label for="hair_length">Longueur: </label>
+                <input type="text" id="hair_length" name="hair_length" value="<%= userAppearance.hair_length %>">
+            </div>
+            <div id="face" class="form-box">
+                <h3>Visage</h3>
+                <label for="facial_hair">Poils du visage: </label>
+                <input type="text" id="facial_hair" name="facial_hair" value="<%= userAppearance.facial_hair %>">
+                <label for="eye_color">Couleur des yeux: </label>
+                <input type="text" id="eye_color" name="eye_color" value="<%= userAppearance.eye_color %>">
+                <label for="eye_shape">Forme des yeux: </label>
+                <input type="text" id="eye_shape" name="eye_shape" value="<%= userAppearance.eye_shape %>">
+            </div>
+            <div id="body" class="form-box">
+                <h3>Corps</h3>
+                <label for="user_skin">Couleur de peau: </label>
+                <select name="skin" id="user_skin">
+                    <% availableSkinTones.forEach(function(tone) {
+                        if (tone.id === userAppearance.skin_tone_id) { %>
+                            <option value=<%= tone.id %> selected><%= tone.name %></option>
+                        <% } else { %>
+                            <option value=<%= tone.id %>><%= tone.label %></option>
+                        <% }
+                    }) %>
+                </select>
+                <label for="body_type">Type de corps: </label>
+                <input type="text" id="body_type" name="body_type" value="<%= userAppearance.body_type %>">
+                <label for="height">Taille: </label>
+                <input type="text" id="height" name="height" value="<%= userAppearance.height %>">
+                <label for="weight">Poids: </label>
+                <input type="text" id="weight" name="weight" value="<%= userAppearance.weight %>">
+                <label for="breast_size">Taille de poitrine: </label>
+                <input type="text" id="breast_size" name="breast_size" value="<%= userAppearance.breast_size %>">
+                <label for="waist_size">Tour de taille: </label>
+                <input type="text" id="waist_size" name="waist_size" value="<%= userAppearance.waist_size %>">
+                <label for="hip_size">Taille des hanches: </label>
+                <input type="text" id="hip_size" name="hip_size" value="<%= userAppearance.hip_size %>">
+            </div>
+            <div id="clothing" class="form-box">
+                <h3>Vêtements</h3>
+                <label for="outerwear">Vêtement extérieur: </label>
+                <input type="text" id="outerwear" name="outerwear" value="<%= userAppearance.outerwear %>">
+                <label for="midwear">Vêtement intermédiaire: </label>
+                <input type="text" id="midwear" name="midwear" value="<%= userAppearance.midwear %>">
+                <label for="topwear">Hauts: </label>
+                <input type="text" id="topwear" name="topwear" value="<%= userAppearance.topwear %>">
+                <label for="bottomwear">Bas: </label>
+                <input type="text" id="bottomwear" name="bottomwear" value="<%= userAppearance.bottomwear %>">
+                <label for="underwear">Sous-vêtements: </label>
+                <input type="text" id="underwear" name="underwear" value="<%= userAppearance.underwear %>">
+                <label for="footwear">Chaussures: </label>
+                <input type="text" id="footwear" name="footwear" value="<%= userAppearance.footwear %>">
+            </div>
+            <div id="accessories" class="form-box">
+                <h3>Accessoires</h3>
+                <label for="eyewear">Accessoires pour les yeux: </label>
+                <input type="text" id="eyewear" name="eyewear" value="<%= userAppearance.eyewear %>">
+                <label for="headwear">Accessoires pour la tête: </label>
+                <input type="text" id="headwear" name="headwear" value="<%= userAppearance.headwear %>">
+                <label for="jewelry">Bijoux: </label>
+                <input type="text" id="jewelry" name="jewelry" value="<%= userAppearance.jewelry %>">
+                <label for="piercings">Piercings: </label>
+                <input type="text" id="piercings" name="piercings" value="<%= userAppearance.piercings %>">
+                <label for="tattoos">Tatouages: </label>
+                <input type="text" id="tattoos" name="tattoos" value="<%= userAppearance.tattoos %>">
+                <label for="makeup_style">Style de maquillage: </label>
+                <input type="text" id="makeup_style" name="makeup_style" value="<%= userAppearance.makeup_style %>">
+            </div>
+            <button type="submit">Mettre à jour l'apparence</button>
+        </form>
+    </section>
+</body>
+</html>

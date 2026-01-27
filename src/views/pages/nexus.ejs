@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/nexus.css">
+    <link rel="stylesheet" href="/css/services_box.css">
+    <title>NEXUS</title>
+</head>
+<body>
+    <header>
+        <h1>Bienvenu au <span id="Nexus_word_in_title">NEXUS</span>,</h1>
+        <h2><%= userData.username.toUpperCase() %></h2>
+        <ul id="nav">
+            <li><a href="/user/profile">Profile</a></li>
+            <li><a href="/user/logout">Logout</a></li>
+        </ul>
+    </header>
+    <main>
+        <section id="nexus-intro">
+            <h2>Explorez le NEXUS</h2>
+            <p>Le NEXUS est votre portail vers une multitude de ressources et d'outils. Utilisez les liens ci-dessous pour ouvrir une porte vers une ressource.</p>
+        </section>
+        <h2>Services Disponibles</h2>
+        <section id="services">
+            <!-- Get the services from db -->
+             <% if (nexusServices && nexusServices.length > 0) { %>
+                    <% nexusServices.forEach(function(service) { %>
+                    <article class="services-box">
+                            <h3><a href="/services/<%= service.id %>"><%= service.name %></a></h3>
+                            <p><%= service.description %></p>
+                    </article>
+                    <% }) %>
+            <% } %>
+            <article class="services-box" id="create-service">
+                <h3><a href="/services/create/0">Créer un service</a></h3>
+                <% if (!nexusServices || nexusServices.length === 0) { %>
+                    <p>Vous n'avez pas encore de services. Cliquez ci-dessus pour en créer un nouveau.</p>
+                <% } else { %>
+                    <p>Ajoutez plus de services en cliquant sur le lien ci-dessus.</p>
+                <% } %>
+            </article>
+            <article class="services-box" id="create-service">
+                <h3><a href="/services/create/1">Créer un service IA</a></h3>
+                <% if (!nexusServices || nexusServices.length === 0) { %>
+                    <p>Vous n'avez pas encore de services pour IA. Cliquez ci-dessus pour en créer un nouveau.</p>
+                <% } else { %>
+                    <p>Ajoutez plus de services en cliquant sur le lien ci-dessus.</p>
+                <% } %>
+            </article>
+        </section>
+    </main>
+</body>
+</html>
