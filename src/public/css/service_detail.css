@@ -1,0 +1,409 @@
+:root {
+  --detail-max-width: 1180px;
+}
+
+body {
+  background: var(--secondary-background-color, #0f1422);
+}
+
+.detail-container {
+  width: min(92%, var(--detail-max-width));
+  margin: 24px auto 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.detail-hero {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border: 1px solid var(--form-box-border-color);
+  border-radius: var(--form-box-border-radius);
+  background: var(--primary-color);
+}
+
+.detail-title {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+#service-name {
+  margin: 0;
+  font-size: var(--nexus-header-h2-font-size);
+}
+
+.detail-description {
+  margin: 0;
+  color: var(--Neutral-color);
+  font-size: var(--font-size-md);
+  line-height: 1.5;
+}
+
+.detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.detail-meta-item {
+  padding: 6px 10px;
+  border-radius: var(--form-box-border-radius);
+  border: 1px solid var(--form-box-border-color);
+  background: var(--input-background-color);
+  font-size: var(--font-size-sm);
+  color: var(--font-color);
+}
+
+.detail-meta-item--success {
+  border-color: rgba(31, 157, 85, 0.35);
+  color: #1f9d55;
+}
+
+.detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  max-width: 360px;
+}
+
+.detail-tag {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--form-box-border-color);
+  background: var(--input-background-color);
+  font-size: var(--font-size-sm);
+  color: var(--font-color);
+}
+
+.detail-tag--muted {
+  color: var(--Neutral-color);
+}
+
+.detail-panel {
+  border: 1px solid var(--form-box-border-color);
+  border-radius: var(--form-box-border-radius);
+  background: var(--primary-color);
+  padding: 20px 24px;
+}
+
+.detail-service-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 140px;
+}
+
+.detail-service-content > * {
+  max-width: 100%;
+}
+
+.detail-service-content img,
+.detail-service-content video,
+.detail-service-content canvas {
+  max-width: 100%;
+  border-radius: var(--form-box-border-radius);
+}
+
+@media (max-width: 720px) {
+  .detail-hero {
+    padding: 18px;
+  }
+
+  .detail-panel {
+    padding: 18px;
+  }
+}
+
+/* --- ComfyUI specific (kept for this service) --- */
+.comfyui-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.comfyui-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--form-box-border-color);
+}
+
+.comfyui-header h3 {
+  margin: 0;
+}
+
+.comfyui-subtitle {
+  color: var(--Neutral-color);
+  font-size: var(--font-size-sm);
+}
+
+.comfyui-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.1fr) minmax(260px, 1.2fr);
+  gap: 24px;
+}
+
+@media (max-width: 800px) {
+  .comfyui-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.comfyui-card {
+  border: 1px solid var(--form-box-border-color);
+  border-radius: var(--form-box-border-radius);
+  background-color: var(--primary-color);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+
+.comfyui-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.comfyui-file-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px dashed var(--form-box-border-color);
+  border-radius: var(--form-box-border-radius);
+  padding: 16px;
+  background: var(--input-background-color);
+  cursor: pointer;
+  text-align: center;
+  word-break: break-word;
+  transition: border-color 0.15s ease, background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.comfyui-file-label:hover {
+  border-color: var(--secondary-color);
+  background-color: rgba(255, 255, 255, 0.03);
+  transform: translateY(-1px);
+}
+
+.comfyui-icon {
+  fill: var(--secondary-color);
+}
+
+.comfyui-files h4 {
+  margin: 0 0 4px;
+}
+
+.comfyui-select-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.comfyui-select {
+  flex: 1;
+  min-height: 40px;
+  border: 1px solid var(--form-box-border-color);
+  border-radius: var(--form-box-border-radius);
+  background-color: var(--input-background-color);
+  color: var(--font-color);
+  padding: 10px 12px;
+  min-width: 200px;
+}
+
+.comfyui-file-hint {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--Neutral-color);
+  line-height: 1.4;
+}
+
+.comfyui-label {
+  font-size: var(--font-size-sm);
+  margin-bottom: 4px;
+}
+
+.comfyui-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.comfyui-input {
+  border: 1px solid var(--form-box-border-color);
+  border-radius: var(--form-box-border-radius);
+  padding: 10px 12px;
+  background-color: var(--input-background-color);
+  color: var(--font-color);
+  max-width: 140px;
+}
+
+.comfyui-textarea {
+  width: 100%;
+  border: 1px solid var(--form-box-border-color);
+  border-radius: var(--form-box-border-radius);
+  padding: 12px 12px;
+  background-color: var(--input-background-color);
+  color: var(--font-color);
+  resize: vertical;
+  min-height: 110px;
+  line-height: 1.4;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.comfyui-textarea:focus {
+  outline: none;
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.comfyui-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.comfyui-btn {
+  border: 1px solid var(--form-box-border-color);
+  border-radius: var(--form-box-border-radius);
+  background: var(--secondary-color);
+  color: var(--font-color-inverted);
+  padding: 10px 16px;
+  cursor: pointer;
+  min-width: 140px;
+  max-width: 100%;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.2;
+  font-size: var(--font-size-sm);
+  transition: background-color 0.15s ease, transform 0.1s ease,
+    box-shadow 0.15s ease;
+}
+
+.comfyui-btn:hover:not([disabled]) {
+  background: #6b8af7;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.comfyui-btn-lg {
+  padding: 12px 20px;
+  font-size: var(--font-size-md);
+}
+
+.comfyui-btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.comfyui-btn-secondary {
+  background: transparent;
+  color: var(--font-color);
+}
+
+.comfyui-status {
+  min-height: 18px;
+  font-size: var(--font-size-sm);
+  color: var(--Neutral-color);
+  line-height: 1.4;
+}
+
+.comfyui-status--error {
+  color: #e04b4b;
+}
+
+.comfyui-status--success {
+  color: #1f9d55;
+}
+
+.comfyui-status--warning {
+  color: #d97706;
+}
+
+.comfyui-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--font-size-sm);
+  color: var(--Neutral-color);
+}
+
+.comfyui-loading[hidden] {
+  display: none !important;
+}
+
+.comfyui-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--form-box-border-color);
+  border-top-color: var(--secondary-color);
+  border-radius: 50%;
+  animation: comfyui-spin 0.8s linear infinite;
+}
+
+.comfyui-result {
+  border: 1px solid var(--form-box-border-color);
+  border-radius: var(--form-box-border-radius);
+  padding: 16px;
+  background: var(--input-background-color);
+  text-align: center;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
+}
+
+.comfyui-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.comfyui-gallery-image {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: var(--form-box-border-radius);
+  border: 1px solid var(--form-box-border-color);
+}
+
+.comfyui-image {
+  max-width: 100%;
+  border-radius: var(--form-box-border-radius);
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
+.comfyui-placeholder {
+  margin: 0;
+  color: var(--Neutral-color);
+  line-height: 1.4;
+}
+
+@keyframes comfyui-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

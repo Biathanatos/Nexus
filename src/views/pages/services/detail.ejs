@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/table.css">
     <link rel="stylesheet" href="/css/form.css">
-    <link rel="stylesheet" href="/css/detail_service.css">
+    <link rel="stylesheet" href="/css/service_detail.css">
     <link rel="stylesheet" href="/css/markdown_viewer.css">
     <title>SERVICES | <%= service.name %></title>
 </head>
@@ -21,25 +21,34 @@
             <li><a href="/user/profile">Profile</a></li>
         </ul>
     </header>
-    <h1 id="service-name"><%= service.name %></h1>
-    <p><%= service.description %></p>
-    <p>Créé le <%= service.created_at %></p>
-    <div id="service-tags">
-        <% if (service.tags && service.tags.length > 0) { %>
-            <% for (const tag of service.tags) { %>
-                <span class="tag"><%= tag %></span>
-            <% } %>
-        <% } else { %>
-            <span>Aucun tag</span>
-        <% } %>
-    </div>
-    <% if (isAI) { %>
-        <p><strong>Ce service est accessible par l'IA.</strong></p>
-    <% } else { %>
-        <p><strong>Ce service n'est pas accessible par l'IA.</strong></p>
-    <% } %>
-    <main>
-        <section id="service-content"></section>
+    <main class="detail-container">
+        <section class="detail-hero">
+            <div class="detail-title">
+                <h1 id="service-name"><%= service.name %></h1>
+                <p class="detail-description"><%= service.description %></p>
+                <div class="detail-meta">
+                    <span class="detail-meta-item">Créé le <%= service.created_at %></span>
+                    <% if (isAI) { %>
+                        <span class="detail-meta-item detail-meta-item--success">Accessible par IA</span>
+                    <% } else { %>
+                        <span class="detail-meta-item">Non accessible par IA</span>
+                    <% } %>
+                </div>
+            </div>
+            <div id="service-tags" class="detail-tags">
+                <% if (service.tags && service.tags.length > 0) { %>
+                    <% for (const tag of service.tags) { %>
+                        <span class="detail-tag"><%= tag %></span>
+                    <% } %>
+                <% } else { %>
+                    <span class="detail-tag detail-tag--muted">Aucun tag</span>
+                <% } %>
+            </div>
+        </section>
+
+        <section class="detail-panel">
+            <div id="service-content" class="detail-service-content"></div>
+        </section>
     </main>
     <% if (clientScriptUrl !== '#') { %>
     <script type="module" src="<%= clientScriptUrl %>"></script>
