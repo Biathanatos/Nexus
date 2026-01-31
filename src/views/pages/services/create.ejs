@@ -27,8 +27,15 @@
             <input type="text" id="service_description" name="service_description" required>
             <label for="service_tags">Tags du service:</label>
             <input type="text" id="service_tags" name="service_tags" placeholder="tag 1, tag 2, tag 3">
-            <label for="service_is_ai">Service utilisable par l'IA :</label>
-            <input type="checkbox" id="service_is_ai" name="service_is_ai">
+            <label for="dependencies">
+                <svg id="svg-folder" width="64px" height="64px" viewBox="-1.6 -1.6 19.20 19.20" fill="var(--secondary-color)" xmlns="http://www.w3.org/2000/svg" transform="rotate(0)matrix(1, 0, 0, 1, 0, 0)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="var(--primary-color)" stroke-width="1.504"> <path d="M0 1H6L9 4H16V14H0V1Z" fill="var(--secondary-color)"></path> </g><g id="SVGRepo_iconCarrier"> <path d="M0 1H6L9 4H16V14H0V1Z" fill="var(--secondary-color)"></path> </g></svg>
+                <span id="picked">Aucun dossier sélectionné</span>
+            </label>
+            <input type="file" name="dependencies" id="dependencies" webkitdirectory mozdirectory directory hidden>
+            <label for="service_is_ai" hidden>>Service utilisable par l'IA:</label>
+            <input type="checkbox" id="service_is_ai" name="service_is_ai" <%= isAI == '1' ? 'checked' : '' %> hidden onClick="return false;">
+            <label for="ai_service_schema" <%= isAI == '1' ? '' : 'hidden' %>>Schéma d'entrée IA:</label>
+            <textarea id="ai_service_schema" name="ai_service_schema" rows="4" cols="50" placeholder="Entrez le schéma d'entrée IA au format [NOM_du_service:prompte de l'ia pour le service]" <%= isAI == '1' ? '' : 'hidden' %> <%= isAI == '1' ? '' : 'disabled' %>></textarea>
         </div>
         <div class="ide">
             <div class="ide-toolbar">

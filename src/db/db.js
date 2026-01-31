@@ -234,45 +234,56 @@ function createToneReferenceTables() {
  * @returns {void}
  */
 function createServiceTables() {
-    // Table dépendances de services (fichiers externes éventuels).
+    // Table des services.
     database.exec(`
         CREATE TABLE IF NOT EXISTS service (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        description TEXT,
-        path TEXT,
-        is_ai BOOLEAN DEFAULT 0,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            description TEXT,
+            path TEXT,
+            data_directory TEXT,
+            serviceIsAI BOOLEAN DEFAULT 0,
+            ai_input_schema TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
     `);
 
-    // Table tags simples (catégorisation services).
+    // Table des dépendances de service.
+    database.exec(`
+        CREATE TABLE IF NOT EXISTS dependencies (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            path TEXT,
+            hash TEXT,
+            size BIGINT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+    `);
+
+    // Table liant service <-> dépendances.
     database.exec(`
         CREATE TABLE IF NOT EXISTS service_dependencies (
-        id SERIAL PRIMARY KEY,
-        service_id INTEGER REFERENCES service(id) ON DELETE CASCADE,
-        filename TEXT,
-        hash TEXT,
-        size BIGINT,
-        kind TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            dependency_id INTEGER NOT NULL REFERENCES dependencies(id) ON DELETE CASCADE,
+            service_id INTEGER NOT NULL REFERENCES service(id) ON DELETE CASCADE,
+            PRIMARY KEY (dependency_id, service_id)
+        );
+    `);
+
+    // Table de tags simples (catégorisation services).
+    database.exec(`
+        CREATE TABLE IF NOT EXISTS tags (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            tag TEXT NOT NULL UNIQUE,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
     `);
 
     // Table de liaison service <-> tags.
     database.exec(`
-        CREATE TABLE IF NOT EXISTS tags (
-        id INTEGER PRIMARY KEY,
-        tag TEXT NOT NULL UNIQUE,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        );
-    `);
-
-    database.exec(`
         CREATE TABLE IF NOT EXISTS service_tags (
-        service_id INTEGER NOT NULL REFERENCES service(id) ON DELETE CASCADE,
-        tag_id INTEGER NOT NULL REFERENCES tags(id) ON DELETE CASCADE,
-        PRIMARY KEY (service_id, tag_id)
+            service_id INTEGER NOT NULL REFERENCES service(id) ON DELETE CASCADE,
+            tag_id INTEGER NOT NULL REFERENCES tags(id) ON DELETE CASCADE,
+            PRIMARY KEY (service_id, tag_id)
         );
     `);
 
@@ -287,7 +298,7 @@ function createServiceTables() {
 
     // Statements préparés pour l'insertion.
     const insertService = database.prepare(
-        'INSERT INTO service (name, description, path, is_ai) VALUES (?, ?, ?, ?)'
+        'INSERT INTO service (name, description, path, data_directory, serviceIsAI, ai_input_schema) VALUES (?, ?, ?, ?, ?, ?)'
     );
     const insertTag = database.prepare(
         'INSERT INTO tags(tag) VALUES (?) ON CONFLICT(tag) DO NOTHING'
@@ -295,9 +306,8 @@ function createServiceTables() {
     const linkTag = database.prepare(`
         INSERT INTO service_tags (service_id, tag_id)
         VALUES (?, (SELECT id FROM tags WHERE tag = ?))
-        ON CONFLICT(service_id, tag_id) DO NOTHING
-    `);
-
+        ON CONFLICT(service_id, tag_id) DO NOTHING`
+    );
     if (!defaultService) {
         // Crée le service par défaut non-IA.
 
@@ -307,12 +317,14 @@ function createServiceTables() {
             const DefaultServiceInfo = insertService.run(
                 'Default Service',
                 'This is the default service template.',
-                'services/script_template.js',
-                0
+                'services/default_service/script_template.js',
+                'services/default_service/data',
+                0,
+                null
             );
             const DefaultServiceId = DefaultServiceInfo.lastInsertRowid;
 
-            for (const tag of ['default', 'template', 'AI']) {
+            for (const tag of ['default', 'template']) {
                 insertTag.run(tag);
                 linkTag.run(DefaultServiceId, tag);
             }
@@ -322,7 +334,9 @@ function createServiceTables() {
             database.exec('ROLLBACK');
             throw err;
         }
-    } else if (!defaultAIService) {
+    }
+    
+    if (!defaultAIService) {
         // Crée le service par défaut IA si manquant.
 
         try {
@@ -331,8 +345,10 @@ function createServiceTables() {
             const DefaultAIServiceInfo = insertService.run(
                 'Default AI Service',
                 'This is the default AI service template.',
-                'services/ai_script_template.js',
-                1
+                'services/default_ai_service/ai_script_template.js',
+                'services/default_ai_service/data',
+                1,
+                null
             );
             const DefaultAIServiceId = DefaultAIServiceInfo.lastInsertRowid;
             

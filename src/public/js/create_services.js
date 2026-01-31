@@ -6,11 +6,15 @@
  */
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('create-service-form');
+    const inputDirectoryPicker = document.getElementById('dependencies');
+    const pickedSpan = document.getElementById('picked');
 
     const serviceName = document.getElementById('service_name');
     const serviceDescription = document.getElementById('service_description');
     const serviceTags = document.getElementById('service_tags');
     const serviceIsAI = document.getElementById('service_is_ai');
+    const aiServiceSchema = document.getElementById('ai_service_schema');
+    const dependenciesInput = document.getElementById('dependencies');
 
     const iframe = document.getElementById('detail-page-integration');
     const existingServices = JSON.parse(document.getElementById("existingServicesData").textContent);
@@ -46,7 +50,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         iframe.onload = () => {
             const doc = iframe.contentDocument;
-
             doc.getElementById("current-user-script-in-ide")?.remove();
 
             const wrapper = doc.createElement("script");
@@ -72,6 +75,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Prévisualisation initiale.
     refreshButton.click();
 
+    inputDirectoryPicker.addEventListener('change', (event) => {
+        const files = event.target.files;
+        if (files.length > 0) {
+            pickedSpan.textContent = `${files.length} fichier(s) sélectionné(s)`;
+        } else {
+            pickedSpan.textContent = "Aucun dossier sélectionné";
+        }
+    });
+
     /**
      * Met à jour le nom de fichier et valide l'unicité du service.
      * @returns {void}
@@ -95,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
      * @param {SubmitEvent} e
      * @returns {void}
      */
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const codeContent = editor.getValue();
         
@@ -107,22 +119,39 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        const data = {
-            serviceName: serviceName.value,
-            serviceDescription: serviceDescription.value,
-            serviceTags: serviceTags.value.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0),
-            serviceIsAI: serviceIsAI.checked,
-            serviceScript: codeContent
-        };
+        // Récupère les fichiers de dépendances.
+        const fd = new FormData();
 
-        fetch('/services/create', {
-            method: 'POST',
-            body: JSON.stringify(data),
-            headers: {
-                'Content-Type': 'application/json'
+        fd.append("serviceName", serviceName.value);
+        fd.append("serviceDescription", serviceDescription.value);
+        fd.append("serviceTags", JSON.stringify(
+            serviceTags.value.split(',').map(t => t.trim()).filter(Boolean)
+        ));
+        fd.append("serviceIsAI", serviceIsAI.checked);
+        fd.append("serviceScript", codeContent);
+        console.log('AI Service Schema:', aiServiceSchema.value === '' ? null : aiServiceSchema.value);
+        fd.append("aiInputSchema", aiServiceSchema.value === '' ? null : aiServiceSchema.value);
+
+        // dossier (webkitdirectory)
+        for (const file of dependenciesInput.files) {
+            fd.append("files", file);
+            fd.append("paths", file.webkitRelativePath);
+        }
+
+        await fetch("/services/create", {
+        method: "POST",
+        body: fd
+        }).then(response => {
+            if (response.ok) {
+                // Redirection vers la liste des services.
+                window.location.href = '/services';
+            } else {
+                response.text().then(text => {
+                    alert(`Error creating service: ${text}`);
+                });
             }
         });
 
-        window.location.href = '/services';
+        // window.location.href = '#';
     })
 });

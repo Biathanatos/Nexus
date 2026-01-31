@@ -2,8 +2,8 @@
 // Reproduit le comportement du DOMContentLoaded de la version réelle.
 // Vue associée: ../views/pages/services/detail.ejs
 // Route associée: ../routes/services.routes.js (GET /services/:id/:is_ai)
-function DOMContentLoadedHandler() {
-  if (typeof globalThis.ui === "function") globalThis.ui();
+async function DOMContentLoadedHandler() {
+  if (typeof globalThis.ui === "function") await globalThis.ui();
 
   const form = document.querySelector('form');
   if (!form) return;
@@ -30,9 +30,33 @@ function formatInput(inputs) {
   if (!inputs || inputs.length === 0) return null;
 
   if (inputs.length === 1) {
-    tags.push(inputs[0].value.trim());
+    if (inputs[0].getAttribute('type') === 'file') {
+      const files = inputs[0].files;
+      if (files && files.length > 1) {
+        for (let i = 0; i < files.length; i++) {
+          tags.push(files[i]);
+        }
+      } else {
+        tags.push(files[0]);
+      }
+    } else {
+      tags.push(inputs[0].value.trim());
+    }
   } else {
-    inputs.forEach(input => tags.push(input));
+    inputs.forEach(input => {
+      if (input.getAttribute('type') === 'file') {
+        const files = input.files;
+        if (files && files.length > 1) {
+          for (let i = 0; i < files.length; i++) {
+            tags.push(files[i]);
+          }
+        } else {
+          tags.push(files[0]);
+        }
+      } else {
+        tags.push(input.value.trim());
+      }
+    });
   }
   return tags;
 }

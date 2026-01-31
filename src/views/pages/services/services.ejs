@@ -23,7 +23,7 @@
             <% if (services.length > 0) { %>
                 <% services.forEach(function(service) { %>
                 <article class="services-box">
-                        <h3><a href="/services/<%= service.id %>/<%= service.is_ai %>"><%= service.name %></a></h3>
+                        <h3><a href="/services/<%= service.id %>/<%= service.serviceIsAI %>"><%= service.name %></a></h3>
                         <p><%= service.description %></p>
                 </article>
                 <% }) %>

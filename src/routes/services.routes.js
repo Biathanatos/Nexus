@@ -3,10 +3,12 @@ const path = require('path');
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const upload = multer();
 
 const { authMiddleware } = require('../middelware/authMiddleware');
-const { getDatabase } = require('../db/db');
-const { getDefaultServiceTemplate, getAllServices } = require('../db/services');
+const { getDatabase, createServiceTables } = require('../db/db');
+const { getDefaultServiceTemplate, getAllServices, createServicesInDB, createServicesFiles, removeService } = require('../db/services');
 const { writeDefaultServiceFile, writeDefaultAiServiceFile } = require('../db/serviceFiles');
 // Liens utiles:
 // - Middleware auth: ../middelware/authMiddleware.js
@@ -30,15 +32,14 @@ router.get('/', authMiddleware, (req, res) => {
 });
 
 /**
- * Route: GET /services/create/:is_ai
+ * Route: GET /services/create/:serviceIsAI
  * Objectif: afficher la page de création d'un service (IA ou non).
  * Params:
- * - is_ai: "1" pour IA, sinon 0.
+ * - serviceIsAI: "1" pour IA, sinon 0.
  */
-router.get('/create/:is_ai', authMiddleware, (req, res) => {
+router.get('/create/:serviceIsAI', authMiddleware, (req, res) => {
     // Convertit le paramètre en booléen exploitable.
-    const isAI = req.params.is_ai === '1' ? true : false;
-    console.log('isAI:', isAI);
+    const isAI = req.params.serviceIsAI === '1' ? true : false;
     const token = req.cookies.token;
     const decoded = jwt.verify(token, 'your_secret_key');
     // Liste actuelle pour éviter les doublons côté front.
@@ -46,12 +47,11 @@ router.get('/create/:is_ai', authMiddleware, (req, res) => {
     const servicesNames = services.map(s => s.name);
     // Récupère le template par défaut (voir: ../db/services.js).
     const defaultServiceTemplate = getDefaultServiceTemplate(isAI);
-    console.log('Default Service Template:', defaultServiceTemplate);
     const defautlServiceTemplatePath = path.join(__dirname, '../', defaultServiceTemplate.path);
     const defaultServiceTemplateContent = fs.readFileSync(defautlServiceTemplatePath, 'utf-8');
     
     // Rendu du template EJS: views/pages/services/create.ejs
-    res.render('pages/services/create', { userData: decoded, templateContent: defaultServiceTemplateContent, filename: defaultServiceTemplate.name, existingServices: servicesNames, isAI: req.params.is_ai});
+    res.render('pages/services/create', { userData: decoded, templateContent: defaultServiceTemplateContent, filename: defaultServiceTemplate.name, existingServices: servicesNames, isAI: req.params.serviceIsAI});
 })
 
 /**
@@ -75,37 +75,61 @@ router.get('/:id/client.js', authMiddleware, (req, res) => {
     const serviceFilePath = path.join(__dirname, '..', service.path);
 
     // S'assure que le fichier de service existe (templates gérés par ../db/serviceFiles.js).
-    if (!fs.existsSync(serviceFilePath) && !service.is_ai) {
+    if (!fs.existsSync(serviceFilePath) && !service.serviceIsAI) {
         writeDefaultServiceFile();
-    } else if (!fs.existsSync(serviceFilePath) && service.is_ai) {
+    } else if (!fs.existsSync(serviceFilePath) && service.serviceIsAI) {
         writeDefaultAiServiceFile();
     }
     // Envoie le script client utilisé par la vue: views/pages/services/detail.ejs
     res.type('application/javascript').sendFile(serviceFilePath);
 });
 
+router.get('/files/:serviceName', authMiddleware, (req, res) => {
+    const { serviceName } = req.params;
+    const serviceDataDir = path.join(__dirname, '..', 'services', serviceName, 'data');
+
+    if (!fs.existsSync(serviceDataDir)) {
+        return res.status(404).send('File not found.');
+    }
+
+    res.json({ files: fs.readdirSync(serviceDataDir) });
+});
+
+router.get('/files/:serviceName/:fileName', authMiddleware, (req, res) => {
+    const { serviceName, fileName } = req.params;
+    const filePath = path.join(__dirname, '..', 'services', serviceName, 'data', fileName);
+
+    if (!fs.existsSync(filePath)) {
+        return res.status(404).send('File not found.');
+    }
+
+    res.sendFile(filePath);
+});
+
 /**
- * Route: GET /services/:id/:is_ai
+ * Route: GET /services/:id/:serviceIsAI
  * Objectif: afficher la page détail d'un service.
  * Params:
  * - id: identifiant du service.
- * - is_ai: "1" pour IA, sinon 0.
+ * - serviceIsAI: "1" pour IA, sinon 0.
  */
-router.get('/:id/:is_ai', authMiddleware, (req, res) => {
+router.get('/:id/:serviceIsAI', authMiddleware, (req, res) => {
     const token = req.cookies.token;
     const decoded = jwt.verify(token, 'your_secret_key');
-    const { id, is_ai } = req.params;
+    const { id, serviceIsAI } = req.params;
     let isAI;
 
-    if (typeof is_ai === 'boolean') {
-        isAI = is_ai;
+    if (typeof serviceIsAI === 'boolean') {
+        isAI = serviceIsAI;
     } else {
-        isAI = is_ai === '1' ? true : false;
+        isAI = serviceIsAI === '1' ? true : false;
     }
 
     if (id === 'test') {
         // Variante de test pour la page détail (front: public/js/services_detail_test.js).
         return res.render('pages/services/detail', { userData: decoded, service: { id: 'test', name: 'Test Service', description: 'This is a test service.', created_at: 'N/A' }, clientScriptUrl: '#', isAI: isAI });
+    } else if (typeof id !== 'string' || isNaN(parseInt(id))) {
+        return res.status(400).send('Invalid service ID.');
     }
 
     // Lecture du service depuis la DB.
@@ -139,43 +163,82 @@ router.get('/:id/:is_ai', authMiddleware, (req, res) => {
  * - serviceIsAI: boolean.
  * - serviceTags: tableau de tags.
  */
-router.post('/create', authMiddleware, (req, res) => {
-    const { serviceName, serviceDescription, serviceScript } = req.body;
+router.post('/create', authMiddleware, upload.array('files'), async (req, res) => {
+    const { serviceName, serviceDescription, serviceTags, serviceIsAI, serviceScript,  aiInputSchema } = req.body;
     const services = getAllServices();
     const servicesNames = services.map(s => s.name);
 
+    // Récupère les chemins des fichiers de dépendances.
+    const raw = req.body.paths;
+    const paths = Array.isArray(raw) ? raw : (raw ? [raw] : []);
+
+    // Crée le slug du service et son dossier.
+    const slug = serviceName.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+    const serviceDir = path.join(__dirname, '..', 'services', slug);
+
+    if (fs.existsSync(serviceDir)) {
+        return res.status(400).send('Service directory already exists.');
+    }
+
+    // Vérifie l'unicité du nom de service.
     if (servicesNames.includes(serviceName)) {
         return res.status(400).send('Service with this name already exists.');
     }
 
-    // Chemin d'écriture du fichier service dans src/services/.
-    const serviceFilePath = path.join(__dirname, '..', 'services', `${serviceName.replace(/\s+/g, '_').toLowerCase()}.js`);
-    fs.writeFileSync(serviceFilePath, serviceScript);
+    let createDBResult;
 
-    // Enregistre le service en DB (table: service).
-    const db = getDatabase();
+    try {
+        createDBResult = await createServicesInDB(
+            req.files,
+            paths,
+            serviceName,
+            serviceDescription,
+            serviceIsAI === '1' ? true : false,
+            serviceIsAI === '1' ? aiInputSchema : null,
+            slug,
+            serviceTags ? (Array.isArray(serviceTags) ? serviceTags : [serviceTags]) : [],
+        );
 
-    const stmt = db.prepare('INSERT INTO service (name, description, path, is_ai) VALUES (?, ?, ?, ?)');
-    stmt.run(serviceName, serviceDescription, `services/${serviceName.replace(/\s+/g, '_').toLowerCase()}.js`, req.body.serviceIsAI ? 1 : 0);
-
-    // Récupère l'id du service créé pour relier les tags.
-    const serviceId = db.prepare('SELECT last_insert_rowid() as id').get().id;
-
-    if (req.body.serviceTags && Array.isArray(req.body.serviceTags)) {
-        // Normalise et insère les tags, puis crée les liaisons.
-        const insertTagStmt = db.prepare('INSERT INTO tags(tag) VALUES (?) ON CONFLICT(tag) DO NOTHING');
-        const link = db.prepare('INSERT INTO service_tags(service_id, tag_id) VALUES (?, (SELECT id FROM tags WHERE tag = ?)) ON CONFLICT DO NOTHING');
-        
-        for (const raw of req.body.serviceTags) {
-            const tag = String(raw).trim();
-            if (!tag) continue;
-
-            insertTagStmt.run(tag);
-            link.run(serviceId, tag);
+        if (createDBResult?.status !== 200) {
+            return res.status(createDBResult?.status || 500).send(createDBResult?.message || 'Error creating service in database.');
         }
+
+        try {
+            const createFilesResult = await createServicesFiles(req.files, paths, serviceDir, slug, serviceScript);
+            // En cas d'échec de la création des fichiers, supprime l'entrée DB créée.
+            if (createFilesResult.status !== 200) {
+                removeService(createDBResult.serviceId);
+                throw new Error(createFilesResult.message);
+            }
+        } catch (error) {
+            // En cas d'erreur lors de la création des fichiers, supprime l'entrée DB créée.
+            const db = getDatabase();
+            const serviceIdStmt = db.prepare('SELECT id FROM service WHERE name = ?');
+            const service = serviceIdStmt.get(serviceName);
+
+            if (service) {
+                removeService(service.id);
+            }
+            return res.status(createDBResult?.status || 500).send(`Error creating service files: ${createDBResult?.message || error.message}`);
+        }
+
+    } catch (error) {
+        console.log(createDBResult?.status, createDBResult?.message);
+        console.error('Unexpected error during service creation:', error);
+        return res.status(createDBResult?.status || 500).send(`Unexpected error during service creation: ${createDBResult?.message || error.message}`);
     }
 
-    res.redirect('/services');
+    // Redirige vers la liste des services.
+    return res.redirect('/services');
+});
+
+router.post('/create/:serviceName/:fileName', authMiddleware, upload.single('file'), (req, res) => {
+    const { serviceName, fileName } = req.params;
+    const fileContent = req.file.buffer;
+
+    // Sauvegarde le fichier uploadé.
+    fs.writeFileSync(path.join(__dirname, '..', 'services', serviceName, 'data', fileName), fileContent);
+    res.status(200).send('File uploaded successfully.');
 });
 
 module.exports = router;

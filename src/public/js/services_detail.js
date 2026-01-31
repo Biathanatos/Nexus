@@ -4,9 +4,9 @@
  * Route associée: ../routes/services.routes.js (GET /services/:id/:is_ai)
  * @returns {void}
  */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // UI injectée par le script service (voir: routes/services.routes.js -> /:id/client.js).
-  if (typeof globalThis.ui === "function") globalThis.ui();
+  if (typeof globalThis.ui === "function") await globalThis.ui();
 
   const form = document.querySelector('form');
   if (!form) return;
@@ -34,13 +34,22 @@ document.addEventListener('DOMContentLoaded', () => {
  * @returns {string[]|null}
  */
 function formatInput(inputs) {
-  const tags = [];
   if (!inputs || inputs.length === 0) return null;
 
-  if (inputs.length === 1) {
-    tags.push(inputs[0].value.trim());
-  } else {
-    inputs.forEach(input => tags.push(input.value.trim()));
+  // Cas 1: un seul input type=file
+  if (inputs.length === 1 && inputs[0].type === 'file') {
+    const files = inputs[0].files;
+    return files ? Array.from(files) : [];
   }
-  return tags;
+
+  // Cas général, si tu l’utilises ailleurs
+  const values = [];
+  inputs.forEach(input => {
+    if (input.type === 'file') {
+      if (input.files) values.push(...input.files);
+    } else {
+      values.push(input.value.trim());
+    }
+  });
+  return values;
 }

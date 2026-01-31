@@ -9,11 +9,15 @@ const fs = require('fs');
  * @returns {void}
  */
 function writeDefaultServiceFile() {
-    const SERVICES_PATH = path.join(__dirname, '..', 'services');
+    const SERVICES_PATH = path.join(__dirname, '..', 'services', 'default_service');
+    const LIB_PATH = path.join(SERVICES_PATH, 'lib');
   // Garde-fou: évite d'écraser un template déjà présent.
-    // Create the default service script file if it doesn't exist
     if (fs.existsSync(path.join(SERVICES_PATH, 'script_template.js'))) {
         return;
+    }
+
+    if (!fs.existsSync(LIB_PATH)) {
+        fs.mkdirSync(LIB_PATH, { recursive: true });
     }
     
     fs.writeFileSync(path.join(SERVICES_PATH, 'script_template.js'), `// Template de service par défaut
@@ -48,14 +52,18 @@ globalThis.start = start;
  * @returns {void}
  */
 function writeDefaultAiServiceFile() {
-    const SERVICES_PATH = path.join(__dirname, '..', 'services');
+  const SERVICES_PATH = path.join(__dirname, '..', 'services', 'default_ai_service');
+  const LIB_PATH = path.join(SERVICES_PATH, 'lib');
   // Garde-fou: évite d'écraser un template déjà présent.
-    // Create the default service script file if it doesn't exist
-    if (fs.existsSync(path.join(SERVICES_PATH, 'script_template.js'))) {
-        return;
-    }
+  if (fs.existsSync(path.join(SERVICES_PATH, 'ai_script_template.js'))) {
+      return;
+  }
+
+  if (!fs.existsSync(LIB_PATH)) {
+      fs.mkdirSync(LIB_PATH, { recursive: true });
+  }
     
-    fs.writeFileSync(path.join(SERVICES_PATH, 'script_template.js'), `// Template de service IA par défaut
+  fs.writeFileSync(path.join(SERVICES_PATH, 'ai_script_template.js'), `// Template de service IA par défaut
 async function ui() {
   const root = document.getElementById("service-content");
   if (!root) throw new Error("#service-content introuvable");

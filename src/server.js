@@ -20,6 +20,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', require('./routes/nexus.routes.js'));
 app.use('/user', require('./routes/user.routes.js'));
 app.use('/services', require('./routes/services.routes.js'));
+app.use('/api/services', require('./routes/services.api.routes.js'));
 
 // Démarrage du serveur HTTP.
 app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`));

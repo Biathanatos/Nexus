@@ -21,7 +21,7 @@
             <li><a href="/user/profile">Profile</a></li>
         </ul>
     </header>
-    <h1><%= service.name %></h1>
+    <h1 id="service-name"><%= service.name %></h1>
     <p><%= service.description %></p>
     <p>Créé le <%= service.created_at %></p>
     <div id="service-tags">
@@ -33,7 +33,6 @@
             <span>Aucun tag</span>
         <% } %>
     </div>
-    <% console.log('isAI:', isAI) %>
     <% if (isAI) { %>
         <p><strong>Ce service est accessible par l'IA.</strong></p>
     <% } else { %>
@@ -42,7 +41,6 @@
     <main>
         <section id="service-content"></section>
     </main>
-    <%= console.log('Client Script URL:', clientScriptUrl) %>
     <% if (clientScriptUrl !== '#') { %>
     <script type="module" src="<%= clientScriptUrl %>"></script>
     <script src="/js/services_detail.js"></script>

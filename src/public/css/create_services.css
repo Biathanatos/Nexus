@@ -22,6 +22,29 @@ form {
     padding: 10px 12px;
 }
 
+#service_is_ai {
+    cursor: not-allowed;
+}
+
+label[for="dependencies"] {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: var(--form-box-border-radius);
+    transition: all 0.3s ease;
+}
+
+label[for="dependencies"]:hover {
+    border: solid 1px var(--accent-color);
+}
+
+label[for="dependencies"]:hover #svg-folder {
+    fill: var(--accent-color);
+}
+
 #save-button,
 #refresh-preview-button {
     width: auto;
